@@ -1,0 +1,577 @@
+openapi: 3.0.3
+info:
+  title: Clinics Admin API
+  version: 1.0.0
+  description: >
+    Contract-first spec for the Clinics Admin SPA. Every route requires a
+    bearerAuth JWT except POST /auth/login. List endpoints return
+    { data: T[], meta: {...} }. Validation failures return
+    { message, errors: { field: string[] } } with HTTP 422.
+
+servers:
+  - url: /api
+
+security:
+  - bearerAuth: []
+
+tags:
+  - name: auth
+  - name: patients
+  - name: appointments
+  - name: medical-history
+  - name: clinical
+  - name: invoices
+
+paths:
+  /auth/login:
+    post:
+      tags: [auth]
+      operationId: loginUser
+      summary: Authenticate an admin user and return a bearer token
+      security: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/LoginRequest'
+      responses:
+        '200':
+          description: Authenticated
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/LoginResponse'
+        '422':
+          $ref: '#/components/responses/ValidationError'
+
+  /patients:
+    post:
+      tags: [patients]
+      operationId: createPatient
+      summary: Create a patient
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/PatientCreate'
+      responses:
+        '201':
+          description: Created
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PatientResource'
+        '422':
+          $ref: '#/components/responses/ValidationError'
+
+  /patients/{id}:
+    parameters:
+      - $ref: '#/components/parameters/IdPath'
+    get:
+      tags: [patients]
+      operationId: getPatient
+      summary: Get a single patient
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PatientResource'
+        '404':
+          $ref: '#/components/responses/NotFound'
+    put:
+      tags: [patients]
+      operationId: updatePatient
+      summary: Update a patient
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/PatientUpdate'
+      responses:
+        '200':
+          description: Updated
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PatientResource'
+        '422':
+          $ref: '#/components/responses/ValidationError'
+
+  /appointments:
+    get:
+      tags: [appointments]
+      operationId: listAppointments
+      summary: List appointments
+      parameters:
+        - name: patient_id
+          in: query
+          schema: { type: integer }
+        - name: user_id
+          in: query
+          schema: { type: integer }
+        - $ref: '#/components/parameters/Sort'
+        - $ref: '#/components/parameters/Page'
+        - $ref: '#/components/parameters/PerPage'
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AppointmentList'
+    post:
+      tags: [appointments]
+      operationId: createAppointment
+      summary: Create an appointment
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/AppointmentCreate'
+      responses:
+        '201':
+          description: Created
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AppointmentResource'
+        '422':
+          $ref: '#/components/responses/ValidationError'
+
+  /medical-history:
+    get:
+      tags: [medical-history]
+      operationId: listMedicalHistory
+      summary: List medical history records
+      parameters:
+        - name: patient_id
+          in: query
+          schema: { type: integer }
+        - $ref: '#/components/parameters/Sort'
+        - $ref: '#/components/parameters/Page'
+        - $ref: '#/components/parameters/PerPage'
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/MedicalHistoryList'
+    post:
+      tags: [medical-history]
+      operationId: createMedicalHistory
+      summary: Create a medical history record
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/MedicalHistoryCreate'
+      responses:
+        '201':
+          description: Created
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/MedicalHistoryResource'
+        '422':
+          $ref: '#/components/responses/ValidationError'
+
+  /orthodontics-medical-histories:
+    get:
+      tags: [clinical]
+      operationId: listOrthodonticsMedicalHistories
+      summary: List orthodontics medical histories (latest first is the active sheet)
+      parameters:
+        - name: patient_id
+          in: query
+          schema: { type: integer }
+        - $ref: '#/components/parameters/Sort'
+        - $ref: '#/components/parameters/Page'
+        - $ref: '#/components/parameters/PerPage'
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/OrthodonticsMedicalHistoryList'
+    post:
+      tags: [clinical]
+      operationId: createOrthodonticsMedicalHistory
+      summary: Create (version) an orthodontics medical history
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/OrthodonticsMedicalHistoryCreate'
+      responses:
+        '201':
+          description: Created
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/OrthodonticsMedicalHistoryResource'
+        '422':
+          $ref: '#/components/responses/ValidationError'
+
+  /patients/{id}/summary:
+    parameters:
+      - $ref: '#/components/parameters/IdPath'
+    get:
+      tags: [clinical]
+      operationId: getPatientSummary
+      summary: Aggregate clinical snapshot for a patient
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PatientSummaryResource'
+
+  /invoices:
+    get:
+      tags: [invoices]
+      operationId: listInvoices
+      summary: List invoices (keyed by appointment_id; no patient_id filter)
+      parameters:
+        - name: appointment_id
+          in: query
+          schema: { type: integer }
+        - $ref: '#/components/parameters/Sort'
+        - $ref: '#/components/parameters/Page'
+        - $ref: '#/components/parameters/PerPage'
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/InvoiceList'
+
+components:
+  securitySchemes:
+    bearerAuth:
+      type: http
+      scheme: bearer
+      bearerFormat: JWT
+
+  parameters:
+    IdPath:
+      name: id
+      in: path
+      required: true
+      schema: { type: integer }
+    Sort:
+      name: sort
+      in: query
+      description: Field to sort by; prefix with '-' for descending.
+      schema: { type: string }
+    Page:
+      name: page
+      in: query
+      schema: { type: integer, minimum: 1 }
+    PerPage:
+      name: per_page
+      in: query
+      schema: { type: integer, minimum: 1, maximum: 100 }
+
+  responses:
+    ValidationError:
+      description: Validation failed
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/ValidationError'
+    NotFound:
+      description: Resource not found
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              message: { type: string }
+            required: [message]
+
+  schemas:
+    PaginationMeta:
+      type: object
+      required: [current_page, per_page, total, last_page]
+      properties:
+        current_page: { type: integer }
+        per_page: { type: integer }
+        total: { type: integer }
+        last_page: { type: integer }
+
+    ValidationError:
+      type: object
+      required: [message, errors]
+      properties:
+        message: { type: string }
+        errors:
+          type: object
+          additionalProperties:
+            type: array
+            items: { type: string }
+
+    LoginRequest:
+      type: object
+      required: [username, password]
+      properties:
+        username:
+          type: string
+          format: email
+          description: Admin email (named `username` for Laravel guard parity).
+        password:
+          type: string
+          format: password
+
+    AuthUser:
+      type: object
+      required: [id, name, email]
+      properties:
+        id: { type: integer }
+        name: { type: string }
+        email: { type: string, format: email }
+
+    LoginResponse:
+      type: object
+      required: [access_token, token_type, user]
+      properties:
+        access_token: { type: string }
+        token_type: { type: string, example: Bearer }
+        user:
+          $ref: '#/components/schemas/AuthUser'
+
+    Patient:
+      type: object
+      required: [id, first_name, last_name, full_name]
+      properties:
+        id: { type: integer }
+        first_name: { type: string, maxLength: 100 }
+        last_name: { type: string, maxLength: 100 }
+        full_name: { type: string }
+        date_of_birth:
+          type: string
+          format: date
+          nullable: true
+        gender:
+          type: string
+          nullable: true
+          enum: [Male, Female, Other]
+        email:
+          type: string
+          format: email
+          maxLength: 100
+          nullable: true
+        phone:
+          type: string
+          maxLength: 20
+          nullable: true
+        address:
+          type: string
+          maxLength: 255
+          nullable: true
+        created_at: { type: string, format: date-time }
+        updated_at: { type: string, format: date-time }
+
+    PatientCreate:
+      type: object
+      required: [first_name, last_name]
+      properties:
+        first_name: { type: string, maxLength: 100 }
+        last_name: { type: string, maxLength: 100 }
+        date_of_birth: { type: string, format: date, nullable: true }
+        gender: { type: string, nullable: true, enum: [Male, Female, Other] }
+        email: { type: string, format: email, maxLength: 100, nullable: true }
+        phone: { type: string, maxLength: 20, nullable: true }
+        address: { type: string, maxLength: 255, nullable: true }
+
+    PatientUpdate:
+      allOf:
+        - $ref: '#/components/schemas/PatientCreate'
+
+    PatientResource:
+      type: object
+      required: [data]
+      properties:
+        data:
+          $ref: '#/components/schemas/Patient'
+
+    AppointmentStatus:
+      type: string
+      enum: [Scheduled, Confirmed, Completed, Cancelled]
+
+    Appointment:
+      type: object
+      required: [id, patient_id, user_id, appointment_date_time, duration_minutes, status]
+      properties:
+        id: { type: integer }
+        patient_id: { type: integer }
+        user_id: { type: integer }
+        appointment_date_time: { type: string, format: date-time }
+        duration_minutes: { type: integer, minimum: 1, maximum: 600 }
+        reason_for_visit: { type: string, nullable: true }
+        status:
+          $ref: '#/components/schemas/AppointmentStatus'
+        created_at: { type: string, format: date-time }
+        updated_at: { type: string, format: date-time }
+
+    AppointmentCreate:
+      type: object
+      required: [patient_id, user_id, appointment_date_time]
+      properties:
+        patient_id: { type: integer }
+        user_id: { type: integer }
+        appointment_date_time: { type: string, format: date-time }
+        duration_minutes: { type: integer, minimum: 1, maximum: 600, default: 30 }
+        reason_for_visit: { type: string, nullable: true }
+        status:
+          $ref: '#/components/schemas/AppointmentStatus'
+
+    AppointmentResource:
+      type: object
+      required: [data]
+      properties:
+        data:
+          $ref: '#/components/schemas/Appointment'
+
+    AppointmentList:
+      type: object
+      required: [data, meta]
+      properties:
+        data:
+          type: array
+          items: { $ref: '#/components/schemas/Appointment' }
+        meta: { $ref: '#/components/schemas/PaginationMeta' }
+
+    MedicalHistory:
+      type: object
+      required: [id, patient_id, condition_name]
+      properties:
+        id: { type: integer }
+        patient_id: { type: integer }
+        condition_name: { type: string, maxLength: 255 }
+        notes: { type: string, nullable: true }
+        created_at: { type: string, format: date-time }
+        updated_at: { type: string, format: date-time }
+
+    MedicalHistoryCreate:
+      type: object
+      required: [patient_id, condition_name]
+      properties:
+        patient_id: { type: integer }
+        condition_name: { type: string, maxLength: 255 }
+        notes: { type: string, nullable: true }
+
+    MedicalHistoryResource:
+      type: object
+      required: [data]
+      properties:
+        data:
+          $ref: '#/components/schemas/MedicalHistory'
+
+    MedicalHistoryList:
+      type: object
+      required: [data, meta]
+      properties:
+        data:
+          type: array
+          items: { $ref: '#/components/schemas/MedicalHistory' }
+        meta: { $ref: '#/components/schemas/PaginationMeta' }
+
+    OrthodonticsMedicalHistory:
+      type: object
+      required: [id, patient_id]
+      properties:
+        id: { type: integer }
+        patient_id: { type: integer }
+        main_complaints: { type: string, nullable: true }
+        functional_disturbances: { type: string, nullable: true }
+        ent_pathology: { type: string, nullable: true }
+        postural_disturbances: { type: string, nullable: true }
+        biometric_findings: { type: string, nullable: true }
+        treatment_plan: { type: string, nullable: true }
+        created_at: { type: string, format: date-time }
+        updated_at: { type: string, format: date-time }
+
+    OrthodonticsMedicalHistoryCreate:
+      type: object
+      required: [patient_id]
+      properties:
+        patient_id: { type: integer }
+        main_complaints: { type: string, nullable: true }
+        functional_disturbances: { type: string, nullable: true }
+        ent_pathology: { type: string, nullable: true }
+        postural_disturbances: { type: string, nullable: true }
+        biometric_findings: { type: string, nullable: true }
+        treatment_plan: { type: string, nullable: true }
+
+    OrthodonticsMedicalHistoryResource:
+      type: object
+      required: [data]
+      properties:
+        data:
+          $ref: '#/components/schemas/OrthodonticsMedicalHistory'
+
+    OrthodonticsMedicalHistoryList:
+      type: object
+      required: [data, meta]
+      properties:
+        data:
+          type: array
+          items: { $ref: '#/components/schemas/OrthodonticsMedicalHistory' }
+        meta: { $ref: '#/components/schemas/PaginationMeta' }
+
+    InvoicePaymentStatus:
+      type: string
+      enum: [Pending, Paid, Partial]
+
+    Invoice:
+      type: object
+      required: [id, appointment_id, invoice_date, total_amount, amount_paid, remaining_balance, payment_status]
+      properties:
+        id: { type: integer }
+        appointment_id: { type: integer }
+        invoice_date: { type: string, format: date }
+        total_amount: { type: string, description: Decimal string }
+        amount_paid: { type: string, description: Decimal string }
+        remaining_balance: { type: string, description: Decimal string }
+        payment_status:
+          $ref: '#/components/schemas/InvoicePaymentStatus'
+        created_at: { type: string, format: date-time }
+        updated_at: { type: string, format: date-time }
+
+    InvoiceList:
+      type: object
+      required: [data, meta]
+      properties:
+        data:
+          type: array
+          items: { $ref: '#/components/schemas/Invoice' }
+        meta: { $ref: '#/components/schemas/PaginationMeta' }
+
+    PatientSummary:
+      type: object
+      properties:
+        patient: { $ref: '#/components/schemas/Patient' }
+        upcoming_appointments:
+          type: array
+          items: { $ref: '#/components/schemas/Appointment' }
+        open_invoice_count: { type: integer }
+        medical_history_count: { type: integer }
+
+    PatientSummaryResource:
+      type: object
+      required: [data]
+      properties:
+        data:
+          $ref: '#/components/schemas/PatientSummary'
