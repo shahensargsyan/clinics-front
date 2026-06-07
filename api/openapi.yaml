@@ -46,6 +46,25 @@ paths:
           $ref: '#/components/responses/ValidationError'
 
   /patients:
+    get:
+      tags: [patients]
+      operationId: listPatients
+      summary: List all patients with optional search/pagination
+      parameters:
+        - name: search
+          in: query
+          description: Full-text search across name, email, phone.
+          schema: { type: string }
+        - $ref: '#/components/parameters/Sort'
+        - $ref: '#/components/parameters/Page'
+        - $ref: '#/components/parameters/PerPage'
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PatientList'
     post:
       tags: [patients]
       operationId: createPatient
@@ -405,6 +424,15 @@ components:
       properties:
         data:
           $ref: '#/components/schemas/Patient'
+
+    PatientList:
+      type: object
+      required: [data, meta]
+      properties:
+        data:
+          type: array
+          items: { $ref: '#/components/schemas/Patient' }
+        meta: { $ref: '#/components/schemas/PaginationMeta' }
 
     AppointmentStatus:
       type: string
