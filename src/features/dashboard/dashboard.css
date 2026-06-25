@@ -1,0 +1,580 @@
+/* ============================================================
+   Dashboard Page — Comprehensive stats and analytics
+   ============================================================ */
+
+/* -------------------------------- Doctor Profile Card -------------------------------- */
+.doctor-profile-card {
+  background: linear-gradient(135deg, rgba(108, 92, 231, 0.15), rgba(160, 144, 255, 0.1));
+  backdrop-filter: blur(16px);
+  border: 1px solid rgba(255, 255, 255, 0.7);
+  border-radius: 22px;
+  padding: 24px;
+  display: flex;
+  align-items: center;
+  gap: 24px;
+  margin: 24px 4px 20px;
+  box-shadow: 0 18px 50px rgba(85, 92, 160, 0.12);
+}
+
+.doctor-profile__avatar {
+  width: 80px;
+  height: 80px;
+  border-radius: 50%;
+  object-fit: cover;
+  border: 3px solid rgba(255, 255, 255, 0.95);
+  flex: 0 0 80px;
+}
+
+.doctor-profile__content {
+  flex: 1;
+}
+
+.doctor-profile__name {
+  font-size: 24px;
+  font-weight: 700;
+  color: #fff;
+  margin: 0 0 4px;
+}
+
+.doctor-profile__specialty {
+  font-size: 14px;
+  color: #ffa500;
+  margin: 0 0 12px;
+  font-weight: 500;
+}
+
+.doctor-profile__meta {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  font-size: 13px;
+  color: rgba(255, 255, 255, 0.85);
+}
+
+.doctor-profile__status {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.status-dot {
+  width: 12px;
+  height: 12px;
+  border-radius: 50%;
+  background: #22c55e;
+  animation: pulse 2s infinite;
+}
+
+@keyframes pulse {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0.7; }
+}
+
+.doctor-profile__btn {
+  padding: 8px 18px;
+  background: linear-gradient(135deg, #6c5ce7, #8b7bff);
+  color: #fff;
+  border: none;
+  border-radius: 8px;
+  font-size: 13px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: transform 0.15s, filter 0.15s;
+}
+
+.doctor-profile__btn:hover {
+  transform: translateY(-2px);
+  filter: brightness(1.05);
+}
+
+/* -------------------------------- Stats Cards -------------------------------- */
+.dashboard-grid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 20px;
+  margin: 20px 4px;
+}
+
+.stat-card {
+  background: rgba(255, 255, 255, 0.65);
+  backdrop-filter: blur(12px);
+  border: 1px solid rgba(255, 255, 255, 0.7);
+  border-radius: 18px;
+  padding: 28px 20px;
+  text-align: center;
+  box-shadow: 0 10px 32px rgba(108, 92, 231, 0.1);
+  transition: transform 0.2s, box-shadow 0.2s;
+}
+
+.stat-card:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 16px 48px rgba(108, 92, 231, 0.15);
+}
+
+.stat-card__number {
+  font-size: 36px;
+  font-weight: 700;
+  color: #2a2e43;
+  margin-bottom: 8px;
+}
+
+.stat-card__label {
+  font-size: 14px;
+  color: #7b809a;
+  margin-bottom: 16px;
+}
+
+.stat-card__icon {
+  font-size: 32px;
+}
+
+/* -------------------------------- Dashboard Content Grid -------------------------------- */
+.dashboard-content {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 24px;
+  margin: 20px 4px;
+  margin-bottom: 24px;
+}
+
+.card {
+  background: rgba(255, 255, 255, 0.55);
+  backdrop-filter: blur(16px);
+  border: 1px solid rgba(255, 255, 255, 0.7);
+  border-radius: 22px;
+  padding: 24px;
+  box-shadow: 0 18px 50px rgba(85, 92, 160, 0.12);
+}
+
+.card--large {
+  grid-column: 1 / -1;
+}
+
+.card--medium {
+  grid-column: span 1;
+}
+
+.card__title {
+  font-size: 16px;
+  font-weight: 600;
+  color: #2a2e43;
+  margin: 0 0 18px;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.task-count {
+  background: linear-gradient(135deg, #6c5ce7, #8b7bff);
+  color: #fff;
+  padding: 2px 8px;
+  border-radius: 12px;
+  font-size: 12px;
+  font-weight: 700;
+  margin-left: auto;
+}
+
+/* -------------------------------- Schedule List -------------------------------- */
+.schedule-list {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.schedule-item {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  padding: 14px;
+  background: rgba(108, 92, 231, 0.04);
+  border-radius: 12px;
+  border: 1px solid rgba(108, 92, 231, 0.08);
+}
+
+.schedule-time {
+  font-size: 13px;
+  font-weight: 600;
+  color: #6c5ce7;
+  min-width: 70px;
+}
+
+.schedule-patient {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  flex: 1;
+}
+
+.schedule-patient img {
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  object-fit: cover;
+}
+
+.patient-name {
+  font-size: 14px;
+  font-weight: 600;
+  color: #2a2e43;
+}
+
+.patient-service {
+  font-size: 12px;
+  color: #7b809a;
+}
+
+.status-badge {
+  display: inline-block;
+  padding: 5px 12px;
+  border-radius: 20px;
+  font-size: 12px;
+  font-weight: 600;
+  white-space: nowrap;
+}
+
+.status-badge--completed {
+  color: #16a34a;
+  background: rgba(22, 163, 74, 0.15);
+}
+
+.status-badge--inprogress {
+  color: #4263eb;
+  background: rgba(66, 99, 235, 0.15);
+}
+
+.status-badge--upcoming {
+  color: #f08c00;
+  background: rgba(240, 140, 0, 0.15);
+}
+
+.status-badge--missed {
+  color: #dc2626;
+  background: rgba(220, 38, 38, 0.15);
+}
+
+/* -------------------------------- Chart Placeholder -------------------------------- */
+.chart-placeholder {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 24px;
+  min-height: 180px;
+}
+
+.pie-chart {
+  width: 140px;
+  height: 140px;
+  border-radius: 50%;
+  background: conic-gradient(
+    #22c55e 0deg 162deg,
+    #f59e0b 162deg 270deg,
+    #dc2626 270deg 324deg,
+    #94a3b8 324deg 360deg
+  );
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  position: relative;
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.1);
+}
+
+.pie-center {
+  width: 100px;
+  height: 100px;
+  border-radius: 50%;
+  background: rgba(255, 255, 255, 0.95);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+}
+
+.pie-label {
+  font-size: 12px;
+  color: #7b809a;
+  font-weight: 500;
+}
+
+.pie-value {
+  font-size: 24px;
+  font-weight: 700;
+  color: #2a2e43;
+}
+
+.chart-legend {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.legend-item {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 12px;
+  color: #7b809a;
+}
+
+.legend-item .dot {
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+}
+
+.dot.completed { background: #22c55e; }
+.dot.upcoming { background: #f59e0b; }
+.dot.cancelled { background: #dc2626; }
+.dot.noshow { background: #94a3b8; }
+
+.chart-line {
+  min-height: 200px;
+}
+
+/* -------------------------------- Messages List -------------------------------- */
+.messages-list {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  margin-bottom: 16px;
+}
+
+.message-item {
+  display: flex;
+  align-items: flex-start;
+  gap: 12px;
+  padding: 12px;
+  background: rgba(108, 92, 231, 0.04);
+  border-radius: 12px;
+}
+
+.message-item img {
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  object-fit: cover;
+  flex: 0 0 40px;
+}
+
+.message-content {
+  flex: 1;
+  min-width: 0;
+}
+
+.message-name {
+  font-size: 13px;
+  font-weight: 600;
+  color: #2a2e43;
+  margin-bottom: 2px;
+}
+
+.message-text {
+  font-size: 12px;
+  color: #7b809a;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.message-time {
+  font-size: 11px;
+  color: #9aa0b5;
+  white-space: nowrap;
+}
+
+.open-messages-btn {
+  width: 100%;
+  padding: 10px;
+  border: 1px solid rgba(108, 92, 231, 0.3);
+  background: rgba(108, 92, 231, 0.08);
+  color: #6c5ce7;
+  border-radius: 8px;
+  font-size: 13px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background 0.15s, border-color 0.15s;
+}
+
+.open-messages-btn:hover {
+  background: rgba(108, 92, 231, 0.15);
+  border-color: rgba(108, 92, 231, 0.5);
+}
+
+/* -------------------------------- Tasks List -------------------------------- */
+.tasks-list {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.task-item {
+  display: flex;
+  align-items: flex-start;
+  gap: 12px;
+  padding: 12px;
+  background: rgba(108, 92, 231, 0.04);
+  border-radius: 8px;
+}
+
+.task-item input {
+  width: 18px;
+  height: 18px;
+  margin-top: 2px;
+  cursor: pointer;
+}
+
+.task-title {
+  font-size: 13px;
+  font-weight: 600;
+  color: #2a2e43;
+}
+
+.task-desc {
+  font-size: 12px;
+  color: #7b809a;
+  margin: 2px 0;
+}
+
+.task-date {
+  font-size: 11px;
+  color: #dc2626;
+}
+
+/* -------------------------------- Reviews List -------------------------------- */
+.reviews-list {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.review-item {
+  display: flex;
+  align-items: flex-start;
+  gap: 12px;
+  padding: 12px;
+  background: rgba(108, 92, 231, 0.04);
+  border-radius: 8px;
+}
+
+.review-avatar {
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  background: linear-gradient(135deg, #6c5ce7, #8b7bff);
+  color: #fff;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 12px;
+  font-weight: 700;
+  flex: 0 0 40px;
+}
+
+.review-content {
+  flex: 1;
+}
+
+.review-text {
+  font-size: 12px;
+  color: #3a3f57;
+  margin-bottom: 4px;
+}
+
+.review-stars {
+  font-size: 12px;
+}
+
+/* -------------------------------- Medication List -------------------------------- */
+.medication-list {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.medication-item {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 12px;
+  background: rgba(108, 92, 231, 0.04);
+  border-radius: 8px;
+}
+
+.med-name {
+  font-size: 13px;
+  font-weight: 600;
+  color: #2a2e43;
+}
+
+.med-info {
+  font-size: 12px;
+  color: #7b809a;
+  margin: 2px 0;
+}
+
+.alert-badge {
+  padding: 4px 10px;
+  border-radius: 12px;
+  font-size: 11px;
+  font-weight: 700;
+  white-space: nowrap;
+}
+
+.alert-low {
+  color: #d97706;
+  background: rgba(217, 119, 6, 0.15);
+}
+
+.alert-critical {
+  color: #dc2626;
+  background: rgba(220, 38, 38, 0.15);
+}
+
+/* -------------------------------- Responsive -------------------------------- */
+@media (max-width: 1400px) {
+  .dashboard-grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+
+  .dashboard-content {
+    grid-template-columns: 1fr;
+  }
+}
+
+@media (max-width: 1024px) {
+  .dashboard-grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+
+  .doctor-profile-card {
+    flex-direction: column;
+    text-align: center;
+  }
+
+  .doctor-profile__meta {
+    flex-direction: column;
+    gap: 8px;
+  }
+}
+
+@media (max-width: 768px) {
+  .dashboard-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .chart-placeholder {
+    flex-direction: column;
+    gap: 16px;
+  }
+
+  .schedule-item {
+    flex-wrap: wrap;
+  }
+
+  .card {
+    padding: 16px;
+  }
+
+  .card__title {
+    font-size: 14px;
+  }
+}

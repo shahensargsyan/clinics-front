@@ -1,32 +1,101 @@
-import { useParams } from 'react-router-dom';
-import { Tabs, Spin, Typography } from 'antd';
+import { useParams, useNavigate } from 'react-router-dom';
+import { Tabs, Spin } from 'antd';
 import { useGetPatient } from '../../api/generated/patients/patients';
+import { tokenStorage } from '../../api/token-storage';
 import { ProfileTab } from './tabs/ProfileTab';
 import { AppointmentsTab } from './tabs/AppointmentsTab';
 import { MedicalHistoryTab } from './tabs/MedicalHistoryTab';
 import { OrthodonticsTab } from './tabs/OrthodonticsTab';
 import { InvoicesTab } from './tabs/InvoicesTab';
+import {
+  IconHeart, IconSearch, IconExpand, IconMail, IconBell, IconHome,
+  IconMonitor, IconActivity, IconSmile, IconUsers, IconDollar, IconBox,
+  IconVideo, IconBadge, IconChart, IconGear, IconCalendarNav, IconAnchor,
+  IconChevrons,
+} from './icons';
+import './patient-edit.css';
 
 export function PatientEditPage() {
   const id = Number(useParams().id);
+  const navigate = useNavigate();
   const { data, isLoading } = useGetPatient(id);
+  const patient = data?.data;
 
   if (isLoading) return <Spin style={{ margin: '20vh auto', display: 'block' }} />;
 
+  const signOut = () => {
+    tokenStorage.clear();
+    navigate('/login', { replace: true });
+  };
+
+  const navItems = [IconMonitor, IconActivity, IconSmile, IconUsers, IconDollar, IconBox, IconHome, IconVideo, IconBadge, IconChart, IconGear, IconCalendarNav, IconBox, IconAnchor, IconChevrons];
+  const activeNav = 2; // smiley = patients
+
   return (
-    <div style={{ padding: 24 }}>
-      <Typography.Title level={3}>{data?.data.full_name}</Typography.Title>
-      <Tabs
-        defaultActiveKey="profile"
-        destroyInactiveTabPane
-        items={[
-          { key: 'profile', label: 'Profile', children: <ProfileTab patientId={id} /> },
-          { key: 'appointments', label: 'Appointments', children: <AppointmentsTab patientId={id} /> },
-          { key: 'medical', label: 'Medical History', children: <MedicalHistoryTab patientId={id} /> },
-          { key: 'ortho', label: 'Orthodontics', children: <OrthodonticsTab patientId={id} /> },
-          { key: 'invoices', label: 'Invoices', children: <InvoicesTab patientId={id} /> },
-        ]}
-      />
+    <div className="app-shell">
+      {/* ----------------------------- Sidebar ----------------------------- */}
+      <aside className="sidebar">
+        <div className="sidebar__logo"><IconHeart /></div>
+        {navItems.map((Icon, i) => (
+          <div
+            key={i}
+            className={`sidebar__item${i === activeNav ? ' sidebar__item--active' : ''}`}
+            onClick={() => {
+              if (i === 0) navigate('/dashboard');
+              if (i === 2) navigate('/patients');
+            }}
+            style={{ cursor: 'pointer' }}
+          >
+            <Icon />
+          </div>
+        ))}
+      </aside>
+
+      <div className="app-main">
+        {/* --------------------------- Page heading --------------------------- */}
+        <div className="page-head">
+          <div className="page-head__title">Patient Profile</div>
+          <nav className="breadcrumb">
+            <IconHome />
+            <span className="sep">/</span>
+            <span>Patients</span>
+            <span className="sep">/</span>
+            <span className="current">Patient Profile</span>
+          </nav>
+        </div>
+
+        {/* ------------------------------- Patient Header ------------------------------- */}
+        <section className="patient-header-card">
+          <img className="patient-header__avatar" src={`https://i.pravatar.cc/120?img=${(id % 70) + 1}`} alt={patient?.full_name} />
+          <div className="patient-header__content">
+            <h1 className="patient-header__name">{patient?.full_name}</h1>
+            <p className="patient-header__id">Patient ID: {patient?.id}</p>
+            <div className="patient-header__meta">
+              <span className="meta-badge">🚻 {patient?.gender || 'N/A'}</span>
+              <span className="meta-badge">35 years</span>
+              <span className="meta-badge">A+</span>
+              <span className="status-badge status-badge--discharged">Discharged</span>
+            </div>
+          </div>
+        </section>
+
+        {/* ------------------------------- Tabs ------------------------------- */}
+        <section className="patient-tabs-card">
+          <Tabs
+            defaultActiveKey="personal"
+            destroyInactiveTabPane
+            className="patient-tabs"
+            items={[
+              { key: 'personal', label: 'Personal Info', children: <ProfileTab patientId={id} /> },
+              { key: 'medical', label: 'Medical Info', children: <MedicalHistoryTab patientId={id} /> },
+              { key: 'admission', label: 'Appointments', children: <AppointmentsTab patientId={id} /> },
+              { key: 'history', label: 'Orthodontics Medical Histories', children: <OrthodonticsTab patientId={id} /> },
+            ]}
+          />
+        </section>
+      </div>
+
+      <button className="settings-fab" title="Settings"><IconGear /></button>
     </div>
   );
 }

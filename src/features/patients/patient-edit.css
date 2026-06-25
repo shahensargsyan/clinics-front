@@ -1,0 +1,262 @@
+/* ============================================================
+   Patient Edit Page — Header + Tabs with glassmorphism
+   ============================================================ */
+
+/* -------------------------------- Patient Header Card -------------------------------- */
+.patient-header-card {
+  background: linear-gradient(135deg, rgba(108, 92, 231, 0.15), rgba(160, 144, 255, 0.1));
+  backdrop-filter: blur(16px);
+  border: 1px solid rgba(255, 255, 255, 0.7);
+  border-radius: 22px;
+  padding: 28px;
+  display: flex;
+  align-items: flex-start;
+  gap: 28px;
+  margin: 24px 4px 20px;
+  box-shadow: 0 18px 50px rgba(85, 92, 160, 0.12);
+}
+
+.patient-header__avatar {
+  width: 100px;
+  height: 100px;
+  border-radius: 50%;
+  object-fit: cover;
+  border: 4px solid rgba(255, 255, 255, 0.95);
+  box-shadow: 0 6px 16px rgba(0, 0, 0, 0.15);
+  flex: 0 0 100px;
+}
+
+.patient-header__content {
+  flex: 1;
+}
+
+.patient-header__name {
+  font-size: 32px;
+  font-weight: 700;
+  color: #fff;
+  margin: 0 0 8px;
+}
+
+.patient-header__id {
+  font-size: 15px;
+  color: rgba(255, 255, 255, 0.85);
+  margin: 0 0 14px;
+}
+
+.patient-header__meta {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  flex-wrap: wrap;
+}
+
+.meta-badge {
+  display: inline-block;
+  padding: 6px 14px;
+  background: rgba(255, 255, 255, 0.2);
+  color: #fff;
+  border-radius: 20px;
+  font-size: 13px;
+  font-weight: 500;
+}
+
+.status-badge {
+  display: inline-block;
+  padding: 6px 14px;
+  border-radius: 20px;
+  font-size: 12.5px;
+  font-weight: 600;
+}
+
+.status-badge--discharged {
+  color: #0c7c59;
+  background: rgba(12, 124, 89, 0.2);
+  border: 1px solid rgba(12, 124, 89, 0.3);
+}
+
+/* -------------------------------- Patient Tabs Card -------------------------------- */
+.patient-tabs-card {
+  background: rgba(255, 255, 255, 0.55);
+  backdrop-filter: blur(16px);
+  border: 1px solid rgba(255, 255, 255, 0.7);
+  border-radius: 22px;
+  box-shadow: 0 18px 50px rgba(85, 92, 160, 0.16);
+  overflow: hidden;
+  margin: 0 4px;
+}
+
+.patient-tabs {
+  margin: 0;
+}
+
+/* Customize Ant Design tabs */
+.patient-tabs .ant-tabs-nav {
+  background: transparent;
+  border-bottom: 1px solid rgba(108, 92, 231, 0.12);
+  margin: 0;
+  padding: 0;
+}
+
+.patient-tabs .ant-tabs-nav-wrap {
+  padding: 16px 24px 0;
+}
+
+.patient-tabs .ant-tabs-tab {
+  border: none !important;
+  font-size: 14px;
+  font-weight: 500;
+  color: #7b809a;
+  padding: 10px 4px !important;
+  margin: 0 24px 0 0 !important;
+}
+
+.patient-tabs .ant-tabs-tab:hover {
+  color: #6c5ce7;
+}
+
+.patient-tabs .ant-tabs-tab-active {
+  color: #6c5ce7 !important;
+}
+
+.patient-tabs .ant-tabs-ink-bar {
+  background: linear-gradient(90deg, #6c5ce7, #a29bfe) !important;
+  height: 3px !important;
+}
+
+.patient-tabs .ant-tabs-content {
+  padding: 24px;
+}
+
+.patient-tabs .ant-tabs-tabpane {
+  margin: 0;
+}
+
+/* -------------------------------- Profile Form Layout -------------------------------- */
+.patient-profile-form {
+  max-width: 100%;
+}
+
+.profile-layout {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 32px;
+  margin-bottom: 24px;
+}
+
+.profile-column {
+  background: rgba(108, 92, 231, 0.04);
+  border: 1px solid rgba(108, 92, 231, 0.1);
+  border-radius: 16px;
+  padding: 20px;
+}
+
+.profile-column__title {
+  font-size: 16px;
+  font-weight: 600;
+  color: #2a2e43;
+  margin: 0 0 18px;
+}
+
+/* Display Mode */
+.profile-display {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.info-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 12px;
+  background: rgba(255, 255, 255, 0.6);
+  border-radius: 8px;
+  border: 1px solid rgba(108, 92, 231, 0.08);
+}
+
+.info-label {
+  font-size: 13px;
+  font-weight: 600;
+  color: #6b7088;
+  text-transform: capitalize;
+}
+
+.info-value {
+  font-size: 14px;
+  font-weight: 500;
+  color: #3a3f57;
+  text-align: right;
+  flex: 1;
+  margin-left: 12px;
+  word-break: break-word;
+}
+
+/* Edit Mode */
+.profile-fields {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.profile-fields .ant-form-item {
+  margin-bottom: 0;
+}
+
+.profile-actions {
+  display: flex;
+  gap: 12px;
+}
+
+.profile-actions button {
+  min-width: 140px;
+}
+
+/* -------------------------------- Responsive -------------------------------- */
+@media (max-width: 1024px) {
+  .profile-layout {
+    grid-template-columns: 1fr;
+    gap: 24px;
+  }
+
+  .patient-header-card {
+    flex-direction: column;
+    text-align: center;
+  }
+
+  .patient-header__avatar {
+    margin: 0 auto;
+  }
+}
+
+@media (max-width: 768px) {
+  .patient-header-card {
+    padding: 20px;
+    gap: 16px;
+  }
+
+  .patient-header__name {
+    font-size: 24px;
+  }
+
+  .patient-header__meta {
+    justify-content: center;
+  }
+
+  .patient-tabs .ant-tabs-nav-wrap {
+    padding: 12px 16px 0;
+  }
+
+  .patient-tabs .ant-tabs-tab {
+    margin: 0 16px 0 0 !important;
+    font-size: 13px;
+  }
+
+  .patient-tabs .ant-tabs-content {
+    padding: 16px;
+  }
+
+  .profile-column {
+    padding: 16px;
+  }
+}
+

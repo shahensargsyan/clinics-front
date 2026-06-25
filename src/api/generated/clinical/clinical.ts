@@ -27,6 +27,7 @@ import type {
   OrthodonticsMedicalHistoryCreate,
   OrthodonticsMedicalHistoryList,
   OrthodonticsMedicalHistoryResource,
+  OrthodonticsMedicalHistoryUpdate,
   PatientSummaryResource,
   ValidationErrorResponse,
 } from "../model";
@@ -305,6 +306,103 @@ export const useCreateOrthodonticsMedicalHistory = <
     queryClient,
   );
 };
+
+/**
+ * @summary Update an orthodontics medical history
+ */
+export const updateOrthodonticsMedicalHistory = (
+  id: number,
+  orthodonticsMedicalHistoryUpdate: OrthodonticsMedicalHistoryUpdate,
+  options?: SecondParameter<typeof customInstance>,
+  signal?: AbortSignal,
+) => {
+  return customInstance<OrthodonticsMedicalHistoryResource>(
+    {
+      url: `/orthodontics-medical-histories/${id}`,
+      method: "PUT",
+      headers: { "Content-Type": "application/json" },
+      data: orthodonticsMedicalHistoryUpdate,
+      signal,
+    },
+    options,
+  );
+};
+
+export const getUpdateOrthodonticsMedicalHistoryMutationOptions = <
+  TError = ValidationErrorResponse,
+  TContext = unknown,
+>(options?: {
+  mutation?: UseMutationOptions<
+    Awaited<ReturnType<typeof updateOrthodonticsMedicalHistory>>,
+    TError,
+    { id: number; data: OrthodonticsMedicalHistoryUpdate },
+    TContext
+  >;
+  request?: SecondParameter<typeof customInstance>;
+}): UseMutationOptions<
+  Awaited<ReturnType<typeof updateOrthodonticsMedicalHistory>>,
+  TError,
+  { id: number; data: OrthodonticsMedicalHistoryUpdate },
+  TContext
+> => {
+  const mutationKey = ["updateOrthodonticsMedicalHistory"];
+  const { mutation: mutationOptions, request: requestOptions } = options
+    ? options.mutation &&
+      "mutationKey" in options.mutation &&
+      options.mutation.mutationKey
+      ? options
+      : { ...options, mutation: { ...options.mutation, mutationKey } }
+    : { mutation: { mutationKey }, request: undefined };
+
+  const mutationFn: MutationFunction<
+    Awaited<ReturnType<typeof updateOrthodonticsMedicalHistory>>,
+    { id: number; data: OrthodonticsMedicalHistoryUpdate }
+  > = (props) => {
+    const { id, data } = props ?? {};
+
+    return updateOrthodonticsMedicalHistory(id, data, requestOptions);
+  };
+
+  return { mutationFn, ...mutationOptions };
+};
+
+export type UpdateOrthodonticsMedicalHistoryMutationResult = NonNullable<
+  Awaited<ReturnType<typeof updateOrthodonticsMedicalHistory>>
+>;
+export type UpdateOrthodonticsMedicalHistoryMutationBody =
+  OrthodonticsMedicalHistoryUpdate;
+export type UpdateOrthodonticsMedicalHistoryMutationError =
+  ValidationErrorResponse;
+
+/**
+ * @summary Update an orthodontics medical history
+ */
+export const useUpdateOrthodonticsMedicalHistory = <
+  TError = ValidationErrorResponse,
+  TContext = unknown,
+>(
+  options?: {
+    mutation?: UseMutationOptions<
+      Awaited<ReturnType<typeof updateOrthodonticsMedicalHistory>>,
+      TError,
+      { id: number; data: OrthodonticsMedicalHistoryUpdate },
+      TContext
+    >;
+    request?: SecondParameter<typeof customInstance>;
+  },
+  queryClient?: QueryClient,
+): UseMutationResult<
+  Awaited<ReturnType<typeof updateOrthodonticsMedicalHistory>>,
+  TError,
+  { id: number; data: OrthodonticsMedicalHistoryUpdate },
+  TContext
+> => {
+  return useMutation(
+    getUpdateOrthodonticsMedicalHistoryMutationOptions(options),
+    queryClient,
+  );
+};
+
 /**
  * @summary Aggregate clinical snapshot for a patient
  */

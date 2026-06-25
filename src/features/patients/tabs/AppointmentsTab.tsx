@@ -10,6 +10,7 @@ import {
   getListAppointmentsQueryKey,
 } from '../../../api/generated/appointments/appointments';
 import type { Appointment } from '../../../api/generated/model';
+import { userStorage } from '../../../api/token-storage';
 
 const STATUS_COLOR: Record<string, string> = {
   Scheduled: 'blue',
@@ -23,6 +24,7 @@ export function AppointmentsTab({ patientId }: { patientId: number }) {
   const queryClient = useQueryClient();
   const [open, setOpen] = useState(false);
   const [form] = Form.useForm();
+  const currentUserId = userStorage.get()?.id;
 
   const listKey = getListAppointmentsQueryKey({ patient_id: patientId });
   const { data, isLoading } = useListAppointments({
@@ -62,8 +64,12 @@ export function AppointmentsTab({ patientId }: { patientId: number }) {
     { title: 'Status', dataIndex: 'status', render: (s: string) => <Tag color={STATUS_COLOR[s]}>{s}</Tag> },
   ];
 
-  const onCreate = () =>
-    form.validateFields().then((v) =>
+  const onCreate = () => {
+    if (!currentUserId) {
+      message.error('Your session is missing clinician info — please sign out and log in again.');
+      return Promise.reject();
+    }
+    return form.validateFields().then((v) =>
       mutate({
         data: {
           patient_id: patientId,
@@ -74,7 +80,10 @@ export function AppointmentsTab({ patientId }: { patientId: number }) {
           status: v.status ?? 'Scheduled',
         },
       }),
-    );
+    ).catch(() => {
+      // validation errors are already surfaced on the form fields
+    });
+  };
 
   return (
     <>
@@ -92,8 +101,8 @@ export function AppointmentsTab({ patientId }: { patientId: number }) {
         destroyOnClose
       >
         <Form form={form} layout="vertical">
-          <Form.Item label="Clinician (user id)" name="user_id" rules={[{ required: true }]}>
-            <InputNumber style={{ width: '100%' }} min={1} />
+          <Form.Item name="user_id" initialValue={currentUserId} hidden rules={[{ required: true }]}>
+            <InputNumber />
           </Form.Item>
           <Form.Item label="Date & time" name="appointment_date_time" rules={[{ required: true }]}>
             <DatePicker showTime style={{ width: '100%' }} />

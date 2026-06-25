@@ -1,6 +1,7 @@
 import { Table, Button, Modal, Form, Input, App, Space } from 'antd';
 import { useState } from 'react';
 import { useQueryClient } from '@tanstack/react-query';
+import dayjs from 'dayjs';
 import {
   useListMedicalHistory,
   useCreateMedicalHistory,
@@ -40,6 +41,11 @@ export function MedicalHistoryTab({ patientId }: { patientId: number }) {
         columns={[
           { title: 'Condition', dataIndex: 'condition_name' },
           { title: 'Notes', dataIndex: 'notes', render: (v) => v ?? '—' },
+          {
+            title: 'Created At',
+            dataIndex: 'created_at',
+            render: (v?: string) => (v ? dayjs(v).format('YYYY-MM-DD HH:mm') : '—'),
+          },
         ]}
       />
       <Modal
