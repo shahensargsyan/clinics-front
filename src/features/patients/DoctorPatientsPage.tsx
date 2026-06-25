@@ -1,13 +1,11 @@
 import { useState, useMemo } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { App } from 'antd';
 import { useListDoctorPatients } from '../../api/generated/doctor-patients/doctor-patients';
-import type { Patient } from '../../api/generated/model';
 import { tokenStorage } from '../../api/token-storage';
 import {
   IconHeart, IconSearch, IconExpand, IconMail, IconBell, IconHome,
-  IconPlus, IconDownload, IconRefresh, IconPhone, IconCalendar, IconPin,
-  IconEdit, IconTrash, IconGear, IconMonitor, IconActivity, IconSmile,
+  IconPlus, IconDownload, IconRefresh, IconPhone, IconPin,
+  IconGear, IconMonitor, IconActivity, IconSmile,
   IconUsers, IconDollar, IconBox, IconVideo, IconBadge, IconChart,
   IconCalendarNav, IconAnchor, IconChevrons,
 } from './icons';
@@ -16,7 +14,6 @@ import './doctor-patients.css';
 const PER_PAGE = 12;
 
 const BLOOD_GROUPS = ['B+', 'O+', 'A+', 'B-', 'AB+', 'O-', 'A-'];
-const DOCTORS = ['Dr. John Doe', 'Dr. Sarah Smith', 'Dr. Rajesh', 'Dr. Jay Soni', 'Dr. Emma Watson', 'Dr. James Moore'];
 
 const pick = <T,>(arr: readonly T[], id: number) => arr[id % arr.length];
 
@@ -34,7 +31,6 @@ function dayOfWeek(id: number): string {
 
 export function DoctorPatientsPage() {
   const navigate = useNavigate();
-  const { modal, message } = App.useApp();
   const [search, setSearch] = useState('');
   const [page, setPage] = useState(1);
 
@@ -76,6 +72,27 @@ export function DoctorPatientsPage() {
       </aside>
 
       <div className="app-main">
+        {/* ----------------------------- Topbar ----------------------------- */}
+        <header className="topbar">
+          <div className="topbar__search">
+            <IconSearch />
+            <input placeholder="Search.." />
+          </div>
+          <div className="topbar__actions">
+            <div className="topbar__icon"><IconExpand /></div>
+            <div className="topbar__icon"><span className="topbar__flag">🇺🇸</span></div>
+            <div className="topbar__icon"><IconMail /><span className="dot" /></div>
+            <div className="topbar__icon"><IconBell /><span className="dot" /></div>
+            <img
+              className="topbar__avatar"
+              src="https://i.pravatar.cc/80?img=47"
+              alt="me"
+              onClick={signOut}
+              title="Sign out"
+            />
+          </div>
+        </header>
+
         {/* ----------------------------- Page heading --------------------------- */}
         <div className="page-head">
           <div className="page-head__title">Patients</div>

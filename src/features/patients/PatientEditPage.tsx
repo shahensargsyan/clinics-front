@@ -52,6 +52,27 @@ export function PatientEditPage() {
       </aside>
 
       <div className="app-main">
+        {/* ----------------------------- Topbar ----------------------------- */}
+        <header className="topbar">
+          <div className="topbar__search">
+            <IconSearch />
+            <input placeholder="Search.." />
+          </div>
+          <div className="topbar__actions">
+            <div className="topbar__icon"><IconExpand /></div>
+            <div className="topbar__icon"><span className="topbar__flag">🇺🇸</span></div>
+            <div className="topbar__icon"><IconMail /><span className="dot" /></div>
+            <div className="topbar__icon"><IconBell /><span className="dot" /></div>
+            <img
+              className="topbar__avatar"
+              src="https://i.pravatar.cc/80?img=47"
+              alt="me"
+              onClick={signOut}
+              title="Sign out"
+            />
+          </div>
+        </header>
+
         {/* --------------------------- Page heading --------------------------- */}
         <div className="page-head">
           <div className="page-head__title">Patient Profile</div>
@@ -90,6 +111,7 @@ export function PatientEditPage() {
               { key: 'medical', label: 'Medical Info', children: <MedicalHistoryTab patientId={id} /> },
               { key: 'admission', label: 'Appointments', children: <AppointmentsTab patientId={id} /> },
               { key: 'history', label: 'Orthodontics Medical Histories', children: <OrthodonticsTab patientId={id} /> },
+              { key: 'invoices', label: 'Invoices', children: <InvoicesTab patientId={id} /> },
             ]}
           />
         </section>
