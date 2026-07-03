@@ -143,6 +143,10 @@
   margin-bottom: 24px;
 }
 
+.profile-layout--ortho {
+  grid-template-columns: 7fr 3fr;
+}
+
 .profile-column {
   background: rgba(108, 92, 231, 0.04);
   border: 1px solid rgba(108, 92, 231, 0.1);
@@ -210,6 +214,169 @@
 .profile-actions button {
   min-width: 140px;
 }
+
+.profile-layout--tooth {
+  grid-template-columns: 7fr 3fr;
+  align-items: start;
+}
+
+/* ----------------------------- Odontogram ----------------------------- */
+.odontogram-toolbar {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  margin-bottom: 20px;
+  flex-wrap: wrap;
+}
+
+.odontogram-toolbar__label {
+  font-size: 13px;
+  font-weight: 600;
+  color: #6b7088;
+}
+
+.odontogram-arch {
+  display: flex;
+  gap: 6px;
+  overflow-x: auto;
+  padding-bottom: 6px;
+  margin-bottom: 14px;
+}
+
+.odontogram-arch__gap {
+  width: 12px;
+  flex: none;
+}
+
+.tooth-cell {
+  flex: none;
+  width: 58px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 4px;
+  padding: 8px 4px;
+  border-radius: 10px;
+  border: 1px solid rgba(108, 92, 231, 0.12);
+  background: rgba(255, 255, 255, 0.6);
+  transition: border-color 0.15s, box-shadow 0.15s;
+}
+
+.tooth-cell--touched {
+  border-color: rgba(108, 92, 231, 0.4);
+  background: rgba(108, 92, 231, 0.06);
+}
+
+.tooth-cell--error {
+  border-color: #e8503a;
+  background: rgba(232, 80, 58, 0.06);
+}
+
+.tooth-cell--highlight {
+  border-color: #e8503a;
+  box-shadow: 0 0 0 3px rgba(232, 80, 58, 0.18);
+}
+
+.tooth-cell__label {
+  font-size: 11px;
+  font-weight: 700;
+  color: #6b7088;
+}
+
+.tooth-cell__input {
+  width: 100%;
+  text-align: center;
+  border: 1px solid rgba(108, 92, 231, 0.18);
+  border-radius: 6px;
+  padding: 4px 2px;
+  font-size: 13px;
+  color: #1f2333;
+  background: #fff;
+  outline: none;
+}
+
+.tooth-cell__input:focus {
+  border-color: var(--purple);
+  box-shadow: 0 0 0 2px rgba(108, 92, 231, 0.15);
+}
+
+.tooth-cell--error .tooth-cell__input {
+  border-color: #e8503a;
+}
+
+.tooth-cell__hint {
+  font-size: 9.5px;
+  color: #9aa0b5;
+  text-align: center;
+  line-height: 1.3;
+}
+
+.tooth-cell__error {
+  font-size: 9.5px;
+  color: #e8503a;
+  text-align: center;
+  line-height: 1.2;
+}
+
+.odontogram-deciduous-toggle {
+  margin: 4px 0 16px;
+}
+
+/* ----------------------------- Bolton panel ----------------------------- */
+.bolton-row {
+  padding: 14px;
+  border-radius: 10px;
+  background: rgba(255, 255, 255, 0.6);
+  border: 1px solid rgba(108, 92, 231, 0.08);
+  margin-bottom: 14px;
+}
+
+.bolton-row__head {
+  display: flex;
+  justify-content: space-between;
+  align-items: baseline;
+  margin-bottom: 6px;
+}
+
+.bolton-row__title { font-size: 13px; font-weight: 700; color: #2a2e43; }
+.bolton-row__ideal { font-size: 11px; color: #9aa0b5; }
+
+.bolton-row__value { font-size: 26px; font-weight: 700; color: #2a2e43; }
+
+.bolton-badge {
+  display: inline-block;
+  margin-top: 6px;
+  padding: 2px 10px;
+  border-radius: 999px;
+  font-size: 11px;
+  font-weight: 600;
+}
+.bolton-badge--neutral { background: rgba(39, 174, 96, 0.14); color: #1e8449; }
+.bolton-badge--mandibular { background: rgba(232, 158, 58, 0.16); color: #a15c07; }
+.bolton-badge--maxillary { background: rgba(74, 144, 226, 0.16); color: #1f5fa8; }
+
+.bolton-missing {
+  font-size: 12.5px;
+  color: #6b7088;
+  margin-bottom: 8px;
+}
+
+.bolton-chip {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 28px;
+  padding: 2px 6px;
+  margin: 3px 4px 0 0;
+  border-radius: 6px;
+  font-size: 11px;
+  font-weight: 600;
+  background: rgba(232, 80, 58, 0.1);
+  color: #c0392b;
+  cursor: pointer;
+  border: 1px solid rgba(232, 80, 58, 0.2);
+}
+.bolton-chip:hover { background: rgba(232, 80, 58, 0.2); }
 
 /* -------------------------------- Responsive -------------------------------- */
 @media (max-width: 1024px) {

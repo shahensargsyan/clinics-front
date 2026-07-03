@@ -1,13 +1,12 @@
 import { useState, useMemo } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { useListDoctorPatients } from '../../api/generated/doctor-patients/doctor-patients';
-import { tokenStorage } from '../../api/token-storage';
+import { useListDoctorPatients } from '../../api/generated/patients/patients';
+import { Sidebar } from '../../components/Sidebar';
+import { UserMenu } from '../../components/UserMenu';
 import {
-  IconHeart, IconSearch, IconExpand, IconMail, IconBell, IconHome,
-  IconPlus, IconDownload, IconRefresh, IconPhone, IconPin,
-  IconGear, IconMonitor, IconActivity, IconSmile,
-  IconUsers, IconDollar, IconBox, IconVideo, IconBadge, IconChart,
-  IconCalendarNav, IconAnchor, IconChevrons,
+  IconSearch, IconExpand, IconMail, IconBell, IconHome,
+  IconPlus, IconDownload, IconRefresh, IconPhone, IconPin, IconGear,
+  IconActivity,
 } from './icons';
 import './doctor-patients.css';
 
@@ -43,33 +42,9 @@ export function DoctorPatientsPage() {
 
   const rows = useMemo(() => data?.data ?? [], [data]);
 
-  const signOut = () => {
-    tokenStorage.clear();
-    navigate('/login', { replace: true });
-  };
-
-  const navItems = [IconMonitor, IconActivity, IconSmile, IconUsers, IconDollar, IconBox, IconHome, IconVideo, IconBadge, IconChart, IconGear, IconCalendarNav, IconBox, IconAnchor, IconChevrons];
-  const activeNav = 2; // smiley = patients
-
   return (
     <div className="app-shell">
-      {/* ----------------------------- Sidebar ----------------------------- */}
-      <aside className="sidebar">
-        <div className="sidebar__logo"><IconHeart /></div>
-        {navItems.map((Icon, i) => (
-          <div
-            key={i}
-            className={`sidebar__item${i === activeNav ? ' sidebar__item--active' : ''}`}
-            onClick={() => {
-              if (i === 0) navigate('/dashboard');
-              if (i === 2) navigate('/patients');
-            }}
-            style={{ cursor: 'pointer' }}
-          >
-            <Icon />
-          </div>
-        ))}
-      </aside>
+      <Sidebar />
 
       <div className="app-main">
         {/* ----------------------------- Topbar ----------------------------- */}
@@ -83,23 +58,17 @@ export function DoctorPatientsPage() {
             <div className="topbar__icon"><span className="topbar__flag">🇺🇸</span></div>
             <div className="topbar__icon"><IconMail /><span className="dot" /></div>
             <div className="topbar__icon"><IconBell /><span className="dot" /></div>
-            <img
-              className="topbar__avatar"
-              src="https://i.pravatar.cc/80?img=47"
-              alt="me"
-              onClick={signOut}
-              title="Sign out"
-            />
+            <UserMenu />
           </div>
         </header>
 
         {/* ----------------------------- Page heading --------------------------- */}
         <div className="page-head">
-          <div className="page-head__title">Patients</div>
+          <div className="page-head__title">My Patients</div>
           <nav className="breadcrumb">
             <IconHome />
             <span className="sep">/</span>
-            <span>Patients</span>
+            <span>My Patients</span>
           </nav>
         </div>
 

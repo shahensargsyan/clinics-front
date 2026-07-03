@@ -12,7 +12,7 @@ import {
   useCreateDiagnosticAsset,
   useUpdateDiagnosticAsset,
   getListDiagnosticAssetsQueryKey,
-} from '../../../api/generated/diagnostic-assets/diagnostic-assets';
+} from '../../../api/generated/clinical/clinical';
 import '../patient-edit.css';
 
 const ORTHO_FIELDS = [
@@ -35,7 +35,7 @@ const ASSET_FIELDS = [
 export function OrthodonticsTab({ patientId }: { patientId: number }) {
   return (
     <div className="patient-profile-form">
-      <div className="profile-layout">
+      <div className="profile-layout profile-layout--ortho">
         <OrthodonticsSection patientId={patientId} />
         <DiagnosticAssetsSection patientId={patientId} />
       </div>

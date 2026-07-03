@@ -57,23 +57,27 @@ export function ProfileTab({ patientId }: { patientId: number }) {
             <h3 className="profile-column__title">Personal Information</h3>
             <div className="profile-display">
               <div className="info-row">
-                <span className="info-label">Date of Birth:</span>
+                <span className="info-label">First name:</span>
+                <span className="info-value">{patient?.first_name || 'N/A'}</span>
+              </div>
+              <div className="info-row">
+                <span className="info-label">Last name:</span>
+                <span className="info-value">{patient?.last_name || 'N/A'}</span>
+              </div>
+              <div className="info-row">
+                <span className="info-label">Date of birth:</span>
                 <span className="info-value">{patient?.date_of_birth || 'N/A'}</span>
               </div>
               <div className="info-row">
-                <span className="info-label">Marital Status:</span>
-                <span className="info-value">Married</span>
-              </div>
-              <div className="info-row">
-                <span className="info-label">National ID:</span>
-                <span className="info-value">NATI{patientId}2345678</span>
+                <span className="info-label">Gender:</span>
+                <span className="info-value">{patient?.gender || 'N/A'}</span>
               </div>
               <div className="info-row">
                 <span className="info-label">Email:</span>
                 <span className="info-value">{patient?.email || 'N/A'}</span>
               </div>
               <div className="info-row">
-                <span className="info-label">Mobile:</span>
+                <span className="info-label">Phone:</span>
                 <span className="info-value">{patient?.phone || 'N/A'}</span>
               </div>
               <div className="info-row">

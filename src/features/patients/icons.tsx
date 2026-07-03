@@ -122,3 +122,29 @@ export const IconAnchor = (p: SVGProps<SVGSVGElement>) => (
 export const IconChevrons = (p: SVGProps<SVGSVGElement>) => (
   <svg {...base(p)}><path d="m7 6 5 5 5-5M7 13l5 5 5-5" /></svg>
 );
+
+/* ----------------------------- User menu / profile ----------------------------- */
+export const IconUser = (p: SVGProps<SVGSVGElement>) => (
+  <svg {...base(p)}><circle cx="12" cy="8" r="4" /><path d="M5 21c0-3.9 3.1-7 7-7s7 3.1 7 7" /></svg>
+);
+export const IconLogout = (p: SVGProps<SVGSVGElement>) => (
+  <svg {...base(p)}><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4" /><path d="m16 17 5-5-5-5" /><path d="M21 12H9" /></svg>
+);
+export const IconFacebook = (p: SVGProps<SVGSVGElement>) => (
+  <svg {...base(p)} fill="currentColor" stroke="none"><path d="M14 8h3V4.5h-3c-2.2 0-4 1.8-4 4V11H7v3.5h3V22h3.5v-7.5h3l.5-3.5h-3.5V8.7c0-.4.3-.7.5-.7z" /></svg>
+);
+export const IconTwitter = (p: SVGProps<SVGSVGElement>) => (
+  <svg {...base(p)} fill="currentColor" stroke="none"><path d="M22 5.9c-.7.3-1.5.6-2.3.7.8-.5 1.5-1.3 1.8-2.3-.8.5-1.7.8-2.6 1A4.1 4.1 0 0 0 11.8 9C8.4 8.8 5.4 7.2 3.4 4.7a4.1 4.1 0 0 0 1.3 5.5c-.7 0-1.3-.2-1.9-.5 0 2 1.4 3.7 3.3 4-.6.2-1.2.2-1.8.1.5 1.6 2 2.8 3.8 2.8A8.3 8.3 0 0 1 2 18.4a11.6 11.6 0 0 0 6.3 1.9c7.5 0 11.7-6.3 11.7-11.7v-.5c.8-.6 1.5-1.3 2-2.2z" /></svg>
+);
+export const IconGithub = (p: SVGProps<SVGSVGElement>) => (
+  <svg {...base(p)} fill="currentColor" stroke="none"><path d="M12 2a10 10 0 0 0-3.2 19.5c.5.1.7-.2.7-.5v-1.7c-2.8.6-3.4-1.3-3.4-1.3-.4-1.2-1.1-1.5-1.1-1.5-.9-.6.1-.6.1-.6 1 .1 1.5 1 1.5 1 .9 1.5 2.3 1.1 2.9.8.1-.6.3-1.1.6-1.3-2.2-.3-4.6-1.1-4.6-5 0-1.1.4-2 1-2.7 0-.3-.4-1.3.1-2.7 0 0 .8-.3 2.8 1a9.4 9.4 0 0 1 5 0c1.9-1.3 2.8-1 2.8-1 .5 1.4.2 2.4.1 2.7.6.7 1 1.6 1 2.7 0 3.9-2.4 4.7-4.6 5 .4.3.7.9.7 1.9v2.7c0 .3.2.6.7.5A10 10 0 0 0 12 2z" /></svg>
+);
+export const IconInstagram = (p: SVGProps<SVGSVGElement>) => (
+  <svg {...base(p)}><rect x="3" y="3" width="18" height="18" rx="5" /><circle cx="12" cy="12" r="4" /><circle cx="17.2" cy="6.8" r=".8" fill="currentColor" stroke="none" /></svg>
+);
+
+export const IconTooth = (p: SVGProps<SVGSVGElement>) => (
+  <svg {...base(p)} fill="currentColor" stroke="none">
+    <path d="M12 3c-1.5 0-2.4.8-3.2.8-1 0-2.1-.8-3.3-.6C3.6 3.5 2 5.3 2 7.9c0 2 .7 3 1.2 4.5.5 1.5.5 2.9.9 4.3.4 1.5 1.1 3.3 2.5 3.3 1.3 0 1.4-1 1.7-2.5.3-1.3.5-2.8 1.7-2.8s1.4 1.5 1.7 2.8c.3 1.5.4 2.5 1.7 2.5 1.4 0 2.1-1.8 2.5-3.3.4-1.4.4-2.8.9-4.3.5-1.5 1.2-2.5 1.2-4.5 0-2.6-1.6-4.4-3.5-4.7-1.2-.2-2.3.6-3.3.6-.8 0-1.7-.8-3-.8z" />
+  </svg>
+);

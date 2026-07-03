@@ -1,17 +1,17 @@
 import { useParams, useNavigate } from 'react-router-dom';
 import { Tabs, Spin } from 'antd';
 import { useGetPatient } from '../../api/generated/patients/patients';
-import { tokenStorage } from '../../api/token-storage';
+import { Sidebar } from '../../components/Sidebar';
+import { UserMenu } from '../../components/UserMenu';
 import { ProfileTab } from './tabs/ProfileTab';
 import { AppointmentsTab } from './tabs/AppointmentsTab';
 import { MedicalHistoryTab } from './tabs/MedicalHistoryTab';
 import { OrthodonticsTab } from './tabs/OrthodonticsTab';
+import { CephalometricAnalysesTab } from './tabs/CephalometricAnalysesTab';
+import { ToothMeasurementsTab } from './tabs/ToothMeasurementsTab';
 import { InvoicesTab } from './tabs/InvoicesTab';
 import {
-  IconHeart, IconSearch, IconExpand, IconMail, IconBell, IconHome,
-  IconMonitor, IconActivity, IconSmile, IconUsers, IconDollar, IconBox,
-  IconVideo, IconBadge, IconChart, IconGear, IconCalendarNav, IconAnchor,
-  IconChevrons,
+  IconSearch, IconExpand, IconMail, IconBell, IconHome, IconGear,
 } from './icons';
 import './patient-edit.css';
 
@@ -23,33 +23,9 @@ export function PatientEditPage() {
 
   if (isLoading) return <Spin style={{ margin: '20vh auto', display: 'block' }} />;
 
-  const signOut = () => {
-    tokenStorage.clear();
-    navigate('/login', { replace: true });
-  };
-
-  const navItems = [IconMonitor, IconActivity, IconSmile, IconUsers, IconDollar, IconBox, IconHome, IconVideo, IconBadge, IconChart, IconGear, IconCalendarNav, IconBox, IconAnchor, IconChevrons];
-  const activeNav = 2; // smiley = patients
-
   return (
     <div className="app-shell">
-      {/* ----------------------------- Sidebar ----------------------------- */}
-      <aside className="sidebar">
-        <div className="sidebar__logo"><IconHeart /></div>
-        {navItems.map((Icon, i) => (
-          <div
-            key={i}
-            className={`sidebar__item${i === activeNav ? ' sidebar__item--active' : ''}`}
-            onClick={() => {
-              if (i === 0) navigate('/dashboard');
-              if (i === 2) navigate('/patients');
-            }}
-            style={{ cursor: 'pointer' }}
-          >
-            <Icon />
-          </div>
-        ))}
-      </aside>
+      <Sidebar />
 
       <div className="app-main">
         {/* ----------------------------- Topbar ----------------------------- */}
@@ -63,13 +39,7 @@ export function PatientEditPage() {
             <div className="topbar__icon"><span className="topbar__flag">🇺🇸</span></div>
             <div className="topbar__icon"><IconMail /><span className="dot" /></div>
             <div className="topbar__icon"><IconBell /><span className="dot" /></div>
-            <img
-              className="topbar__avatar"
-              src="https://i.pravatar.cc/80?img=47"
-              alt="me"
-              onClick={signOut}
-              title="Sign out"
-            />
+            <UserMenu />
           </div>
         </header>
 
@@ -79,7 +49,7 @@ export function PatientEditPage() {
           <nav className="breadcrumb">
             <IconHome />
             <span className="sep">/</span>
-            <span>Patients</span>
+            <span className="breadcrumb__link" onClick={() => navigate('/patients')}>My Patients</span>
             <span className="sep">/</span>
             <span className="current">Patient Profile</span>
           </nav>
@@ -111,6 +81,8 @@ export function PatientEditPage() {
               { key: 'medical', label: 'Medical Info', children: <MedicalHistoryTab patientId={id} /> },
               { key: 'admission', label: 'Appointments', children: <AppointmentsTab patientId={id} /> },
               { key: 'history', label: 'Orthodontics Medical Histories', children: <OrthodonticsTab patientId={id} /> },
+              { key: 'cephalometric', label: 'Cephalometric Analyses', children: <CephalometricAnalysesTab patientId={id} /> },
+              { key: 'tooth-measurements', label: 'Tooth Measurements', children: <ToothMeasurementsTab patientId={id} /> },
               { key: 'invoices', label: 'Invoices', children: <InvoicesTab patientId={id} /> },
             ]}
           />
