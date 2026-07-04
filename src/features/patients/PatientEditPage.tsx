@@ -9,6 +9,7 @@ import { MedicalHistoryTab } from './tabs/MedicalHistoryTab';
 import { OrthodonticsTab } from './tabs/OrthodonticsTab';
 import { CephalometricAnalysesTab } from './tabs/CephalometricAnalysesTab';
 import { ToothMeasurementsTab } from './tabs/ToothMeasurementsTab';
+import { MechanotherapyVisitsTab } from './tabs/MechanotherapyVisitsTab';
 import { InvoicesTab } from './tabs/InvoicesTab';
 import {
   IconSearch, IconExpand, IconMail, IconBell, IconHome, IconGear,
@@ -83,6 +84,7 @@ export function PatientEditPage() {
               { key: 'history', label: 'Orthodontics Medical Histories', children: <OrthodonticsTab patientId={id} /> },
               { key: 'cephalometric', label: 'Cephalometric Analyses', children: <CephalometricAnalysesTab patientId={id} /> },
               { key: 'tooth-measurements', label: 'Tooth Measurements', children: <ToothMeasurementsTab patientId={id} /> },
+              { key: 'mechanotherapy', label: 'Mechanotherapy Visits', children: <MechanotherapyVisitsTab patientId={id} /> },
               { key: 'invoices', label: 'Invoices', children: <InvoicesTab patientId={id} /> },
             ]}
           />

@@ -223,6 +223,15 @@ components:
       required:
       - data
       type: object
+    AppointmentList:
+      properties:
+        data:
+          items:
+            $ref: '#/components/schemas/Appointment'
+          type: array
+      required:
+      - data
+      type: object
     AppointmentPatient:
       description: Minimal patient embed used inside appointment responses.
       properties:
@@ -619,6 +628,37 @@ components:
         has_trg:
           type: boolean
       type: object
+    DoctorAppointmentStats:
+      description: 'All-time counters for the logged-in doctor. missed = past
+
+        appointments still Scheduled/Confirmed (never completed or
+
+        cancelled); upcoming = future Scheduled/Confirmed.
+
+        '
+      properties:
+        cancelled:
+          format: int64
+          type: integer
+        completed:
+          format: int64
+          type: integer
+        missed:
+          format: int64
+          type: integer
+        total:
+          format: int64
+          type: integer
+        upcoming:
+          format: int64
+          type: integer
+      required:
+      - total
+      - completed
+      - upcoming
+      - missed
+      - cancelled
+      type: object
     Error:
       properties:
         message:
@@ -791,6 +831,7 @@ components:
           format: date-time
           type: string
         doctor_signature:
+          description: legacy free text; performed_by is the trusted field
           maxLength: 100
           nullable: true
           type: string
@@ -799,6 +840,11 @@ components:
           type: integer
         patient_id:
           format: int64
+          type: integer
+        performed_by:
+          description: clinician user id
+          format: int64
+          nullable: true
           type: integer
         procedure_notes:
           nullable: true
@@ -811,11 +857,11 @@ components:
           type: string
         visit_date:
           format: date
-          nullable: true
           type: string
       required:
       - id
       - patient_id
+      - visit_date
       - created_at
       - updated_at
       type: object
@@ -833,6 +879,7 @@ components:
         recommendations:
           type: string
         visit_date:
+          description: defaults to today
           format: date
           type: string
       required:
@@ -859,7 +906,6 @@ components:
           type: string
         visit_date:
           format: date
-          nullable: true
           type: string
       type: object
     MedicalHistory:
@@ -2262,6 +2308,43 @@ paths:
           $ref: '#/components/responses/ValidationError'
       tags:
       - Clinical
+  /doctor/appointment-stats:
+    get:
+      operationId: GetDoctorAppointmentStats
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/DoctorAppointmentStats'
+          description: ok
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+      summary: All-time appointment counters for the logged-in doctor's dashboard.
+      tags:
+      - Appointments
+  /doctor/schedule:
+    get:
+      operationId: GetDoctorSchedule
+      parameters:
+      - description: defaults to today (server local time)
+        in: query
+        name: date
+        schema:
+          format: date
+          type: string
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AppointmentList'
+          description: ok, ordered by appointment time ascending, patient included
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+      summary: The logged-in doctor's appointments for one day (default today).
+      tags:
+      - Appointments
   /doctorpatients:
     get:
       description: 'Returns paginated list of patients where `user_id` matches the

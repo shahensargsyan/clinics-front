@@ -25,13 +25,15 @@
  * OpenAPI spec version: 0.1.0
  */
 
-export interface MechanotherapyVisitCreate {
-  /** @maxLength 100 */
-  doctor_signature?: string;
-  /** @minimum 1 */
-  patient_id: number;
-  procedure_notes?: string;
-  recommendations?: string;
-  /** defaults to today */
-  visit_date?: string;
+/**
+ * All-time counters for the logged-in doctor. missed = past
+ * appointments still Scheduled/Confirmed (never completed or
+ * cancelled); upcoming = future Scheduled/Confirmed.
+ */
+export interface DoctorAppointmentStats {
+  cancelled: number;
+  completed: number;
+  missed: number;
+  total: number;
+  upcoming: number;
 }

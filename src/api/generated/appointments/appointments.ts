@@ -43,8 +43,11 @@ import type {
 import type {
   AppointmentCreate,
   AppointmentEnvelope,
+  AppointmentList,
   AppointmentUpdate,
   BadRequestResponse,
+  DoctorAppointmentStats,
+  GetDoctorScheduleParams,
   ListAppointmentsParams,
   NotFoundResponse,
   PaginatedAppointments,
@@ -649,3 +652,328 @@ export const useUpdateAppointment = <
 > => {
   return useMutation(getUpdateAppointmentMutationOptions(options), queryClient);
 };
+/**
+ * @summary All-time appointment counters for the logged-in doctor's dashboard.
+ */
+export const getDoctorAppointmentStats = (
+  options?: SecondParameter<typeof customInstance>,
+  signal?: AbortSignal,
+) => {
+  return customInstance<DoctorAppointmentStats>(
+    { url: `/doctor/appointment-stats`, method: "GET", signal },
+    options,
+  );
+};
+
+export const getGetDoctorAppointmentStatsQueryKey = () => {
+  return [`/doctor/appointment-stats`] as const;
+};
+
+export const getGetDoctorAppointmentStatsQueryOptions = <
+  TData = Awaited<ReturnType<typeof getDoctorAppointmentStats>>,
+  TError = UnauthorizedResponse,
+>(options?: {
+  query?: Partial<
+    UseQueryOptions<
+      Awaited<ReturnType<typeof getDoctorAppointmentStats>>,
+      TError,
+      TData
+    >
+  >;
+  request?: SecondParameter<typeof customInstance>;
+}) => {
+  const { query: queryOptions, request: requestOptions } = options ?? {};
+
+  const queryKey =
+    queryOptions?.queryKey ?? getGetDoctorAppointmentStatsQueryKey();
+
+  const queryFn: QueryFunction<
+    Awaited<ReturnType<typeof getDoctorAppointmentStats>>
+  > = ({ signal }) => getDoctorAppointmentStats(requestOptions, signal);
+
+  return {
+    queryKey,
+    queryFn,
+    staleTime: 30000,
+    ...queryOptions,
+  } as UseQueryOptions<
+    Awaited<ReturnType<typeof getDoctorAppointmentStats>>,
+    TError,
+    TData
+  > & { queryKey: DataTag<QueryKey, TData, TError> };
+};
+
+export type GetDoctorAppointmentStatsQueryResult = NonNullable<
+  Awaited<ReturnType<typeof getDoctorAppointmentStats>>
+>;
+export type GetDoctorAppointmentStatsQueryError = UnauthorizedResponse;
+
+export function useGetDoctorAppointmentStats<
+  TData = Awaited<ReturnType<typeof getDoctorAppointmentStats>>,
+  TError = UnauthorizedResponse,
+>(
+  options: {
+    query: Partial<
+      UseQueryOptions<
+        Awaited<ReturnType<typeof getDoctorAppointmentStats>>,
+        TError,
+        TData
+      >
+    > &
+      Pick<
+        DefinedInitialDataOptions<
+          Awaited<ReturnType<typeof getDoctorAppointmentStats>>,
+          TError,
+          Awaited<ReturnType<typeof getDoctorAppointmentStats>>
+        >,
+        "initialData"
+      >;
+    request?: SecondParameter<typeof customInstance>;
+  },
+  queryClient?: QueryClient,
+): DefinedUseQueryResult<TData, TError> & {
+  queryKey: DataTag<QueryKey, TData, TError>;
+};
+export function useGetDoctorAppointmentStats<
+  TData = Awaited<ReturnType<typeof getDoctorAppointmentStats>>,
+  TError = UnauthorizedResponse,
+>(
+  options?: {
+    query?: Partial<
+      UseQueryOptions<
+        Awaited<ReturnType<typeof getDoctorAppointmentStats>>,
+        TError,
+        TData
+      >
+    > &
+      Pick<
+        UndefinedInitialDataOptions<
+          Awaited<ReturnType<typeof getDoctorAppointmentStats>>,
+          TError,
+          Awaited<ReturnType<typeof getDoctorAppointmentStats>>
+        >,
+        "initialData"
+      >;
+    request?: SecondParameter<typeof customInstance>;
+  },
+  queryClient?: QueryClient,
+): UseQueryResult<TData, TError> & {
+  queryKey: DataTag<QueryKey, TData, TError>;
+};
+export function useGetDoctorAppointmentStats<
+  TData = Awaited<ReturnType<typeof getDoctorAppointmentStats>>,
+  TError = UnauthorizedResponse,
+>(
+  options?: {
+    query?: Partial<
+      UseQueryOptions<
+        Awaited<ReturnType<typeof getDoctorAppointmentStats>>,
+        TError,
+        TData
+      >
+    >;
+    request?: SecondParameter<typeof customInstance>;
+  },
+  queryClient?: QueryClient,
+): UseQueryResult<TData, TError> & {
+  queryKey: DataTag<QueryKey, TData, TError>;
+};
+/**
+ * @summary All-time appointment counters for the logged-in doctor's dashboard.
+ */
+
+export function useGetDoctorAppointmentStats<
+  TData = Awaited<ReturnType<typeof getDoctorAppointmentStats>>,
+  TError = UnauthorizedResponse,
+>(
+  options?: {
+    query?: Partial<
+      UseQueryOptions<
+        Awaited<ReturnType<typeof getDoctorAppointmentStats>>,
+        TError,
+        TData
+      >
+    >;
+    request?: SecondParameter<typeof customInstance>;
+  },
+  queryClient?: QueryClient,
+): UseQueryResult<TData, TError> & {
+  queryKey: DataTag<QueryKey, TData, TError>;
+} {
+  const queryOptions = getGetDoctorAppointmentStatsQueryOptions(options);
+
+  const query = useQuery(queryOptions, queryClient) as UseQueryResult<
+    TData,
+    TError
+  > & { queryKey: DataTag<QueryKey, TData, TError> };
+
+  return { ...query, queryKey: queryOptions.queryKey };
+}
+
+/**
+ * @summary The logged-in doctor's appointments for one day (default today).
+ */
+export const getDoctorSchedule = (
+  params?: GetDoctorScheduleParams,
+  options?: SecondParameter<typeof customInstance>,
+  signal?: AbortSignal,
+) => {
+  return customInstance<AppointmentList>(
+    { url: `/doctor/schedule`, method: "GET", params, signal },
+    options,
+  );
+};
+
+export const getGetDoctorScheduleQueryKey = (
+  params?: GetDoctorScheduleParams,
+) => {
+  return [`/doctor/schedule`, ...(params ? [params] : [])] as const;
+};
+
+export const getGetDoctorScheduleQueryOptions = <
+  TData = Awaited<ReturnType<typeof getDoctorSchedule>>,
+  TError = UnauthorizedResponse,
+>(
+  params?: GetDoctorScheduleParams,
+  options?: {
+    query?: Partial<
+      UseQueryOptions<
+        Awaited<ReturnType<typeof getDoctorSchedule>>,
+        TError,
+        TData
+      >
+    >;
+    request?: SecondParameter<typeof customInstance>;
+  },
+) => {
+  const { query: queryOptions, request: requestOptions } = options ?? {};
+
+  const queryKey =
+    queryOptions?.queryKey ?? getGetDoctorScheduleQueryKey(params);
+
+  const queryFn: QueryFunction<
+    Awaited<ReturnType<typeof getDoctorSchedule>>
+  > = ({ signal }) => getDoctorSchedule(params, requestOptions, signal);
+
+  return {
+    queryKey,
+    queryFn,
+    staleTime: 30000,
+    ...queryOptions,
+  } as UseQueryOptions<
+    Awaited<ReturnType<typeof getDoctorSchedule>>,
+    TError,
+    TData
+  > & { queryKey: DataTag<QueryKey, TData, TError> };
+};
+
+export type GetDoctorScheduleQueryResult = NonNullable<
+  Awaited<ReturnType<typeof getDoctorSchedule>>
+>;
+export type GetDoctorScheduleQueryError = UnauthorizedResponse;
+
+export function useGetDoctorSchedule<
+  TData = Awaited<ReturnType<typeof getDoctorSchedule>>,
+  TError = UnauthorizedResponse,
+>(
+  params: undefined | GetDoctorScheduleParams,
+  options: {
+    query: Partial<
+      UseQueryOptions<
+        Awaited<ReturnType<typeof getDoctorSchedule>>,
+        TError,
+        TData
+      >
+    > &
+      Pick<
+        DefinedInitialDataOptions<
+          Awaited<ReturnType<typeof getDoctorSchedule>>,
+          TError,
+          Awaited<ReturnType<typeof getDoctorSchedule>>
+        >,
+        "initialData"
+      >;
+    request?: SecondParameter<typeof customInstance>;
+  },
+  queryClient?: QueryClient,
+): DefinedUseQueryResult<TData, TError> & {
+  queryKey: DataTag<QueryKey, TData, TError>;
+};
+export function useGetDoctorSchedule<
+  TData = Awaited<ReturnType<typeof getDoctorSchedule>>,
+  TError = UnauthorizedResponse,
+>(
+  params?: GetDoctorScheduleParams,
+  options?: {
+    query?: Partial<
+      UseQueryOptions<
+        Awaited<ReturnType<typeof getDoctorSchedule>>,
+        TError,
+        TData
+      >
+    > &
+      Pick<
+        UndefinedInitialDataOptions<
+          Awaited<ReturnType<typeof getDoctorSchedule>>,
+          TError,
+          Awaited<ReturnType<typeof getDoctorSchedule>>
+        >,
+        "initialData"
+      >;
+    request?: SecondParameter<typeof customInstance>;
+  },
+  queryClient?: QueryClient,
+): UseQueryResult<TData, TError> & {
+  queryKey: DataTag<QueryKey, TData, TError>;
+};
+export function useGetDoctorSchedule<
+  TData = Awaited<ReturnType<typeof getDoctorSchedule>>,
+  TError = UnauthorizedResponse,
+>(
+  params?: GetDoctorScheduleParams,
+  options?: {
+    query?: Partial<
+      UseQueryOptions<
+        Awaited<ReturnType<typeof getDoctorSchedule>>,
+        TError,
+        TData
+      >
+    >;
+    request?: SecondParameter<typeof customInstance>;
+  },
+  queryClient?: QueryClient,
+): UseQueryResult<TData, TError> & {
+  queryKey: DataTag<QueryKey, TData, TError>;
+};
+/**
+ * @summary The logged-in doctor's appointments for one day (default today).
+ */
+
+export function useGetDoctorSchedule<
+  TData = Awaited<ReturnType<typeof getDoctorSchedule>>,
+  TError = UnauthorizedResponse,
+>(
+  params?: GetDoctorScheduleParams,
+  options?: {
+    query?: Partial<
+      UseQueryOptions<
+        Awaited<ReturnType<typeof getDoctorSchedule>>,
+        TError,
+        TData
+      >
+    >;
+    request?: SecondParameter<typeof customInstance>;
+  },
+  queryClient?: QueryClient,
+): UseQueryResult<TData, TError> & {
+  queryKey: DataTag<QueryKey, TData, TError>;
+} {
+  const queryOptions = getGetDoctorScheduleQueryOptions(params, options);
+
+  const query = useQuery(queryOptions, queryClient) as UseQueryResult<
+    TData,
+    TError
+  > & { queryKey: DataTag<QueryKey, TData, TError> };
+
+  return { ...query, queryKey: queryOptions.queryKey };
+}

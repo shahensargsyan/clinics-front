@@ -28,17 +28,22 @@
 export interface MechanotherapyVisit {
   created_at: string;
   /**
+   * legacy free text; performed_by is the trusted field
    * @maxLength 100
    * @nullable
    */
   doctor_signature?: string | null;
   id: number;
   patient_id: number;
+  /**
+   * clinician user id
+   * @nullable
+   */
+  performed_by?: number | null;
   /** @nullable */
   procedure_notes?: string | null;
   /** @nullable */
   recommendations?: string | null;
   updated_at: string;
-  /** @nullable */
-  visit_date?: string | null;
+  visit_date: string;
 }

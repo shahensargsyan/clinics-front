@@ -35,6 +35,5 @@ export interface MechanotherapyVisitUpdate {
   procedure_notes?: string | null;
   /** @nullable */
   recommendations?: string | null;
-  /** @nullable */
-  visit_date?: string | null;
+  visit_date?: string;
 }

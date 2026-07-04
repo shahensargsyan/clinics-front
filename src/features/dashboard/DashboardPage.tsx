@@ -1,12 +1,73 @@
+import { useEffect, useState } from 'react';
+import { useNavigate } from 'react-router-dom';
+import {
+  useGetDoctorSchedule,
+  useGetDoctorAppointmentStats,
+} from '../../api/generated/appointments/appointments';
+import type { Appointment } from '../../api/generated/model';
+import { userStorage } from '../../api/token-storage';
 import { Sidebar } from '../../components/Sidebar';
-import { UserMenu } from '../../components/UserMenu';
+import { UserMenu, AVATAR_URL } from '../../components/UserMenu';
 import {
   IconSearch, IconExpand, IconMail, IconBell, IconHome, IconGear,
 } from '../patients/icons';
 import '../patients/patients.css';
 import './dashboard.css';
 
+const REFRESH_INTERVAL = 60_000;
+
+// The API delivers RFC3339 with an explicit offset — render the clock
+// time as-is rather than converting to the browser's local timezone.
+function timeLabel(iso: string) {
+  return iso.slice(11, 16);
+}
+
+function deriveBadge(appt: Appointment, now: number): { label: string; cls: string } {
+  if (appt.status === 'Completed') return { label: 'Completed', cls: 'completed' };
+  if (appt.status === 'Cancelled') return { label: 'Cancelled', cls: 'cancelled' };
+  const start = new Date(appt.appointment_date_time).getTime();
+  const end = start + appt.duration_minutes * 60_000;
+  if (now < start) return { label: appt.status, cls: 'scheduled' };
+  if (now < end) return { label: 'In Progress', cls: 'inprogress' };
+  return { label: 'Missed', cls: 'missed' };
+}
+
 export function DashboardPage() {
+  const navigate = useNavigate();
+  const user = userStorage.get();
+  const name = user?.name ?? 'Doctor';
+  const email = user?.email ?? '—';
+
+  // Drives badge re-derivation (e.g. Scheduled -> In Progress) between refetches.
+  const [now, setNow] = useState(() => Date.now());
+  useEffect(() => {
+    const tick = setInterval(() => setNow(Date.now()), 30_000);
+    return () => clearInterval(tick);
+  }, []);
+
+  const {
+    data: scheduleData,
+    isLoading: scheduleLoading,
+    isError: scheduleErrored,
+    refetch: refetchSchedule,
+  } = useGetDoctorSchedule(undefined, { query: { refetchInterval: REFRESH_INTERVAL } });
+
+  const {
+    data: stats,
+    isLoading: statsLoading,
+    isError: statsErrored,
+    refetch: refetchStats,
+  } = useGetDoctorAppointmentStats({ query: { refetchInterval: REFRESH_INTERVAL } });
+
+  const appointments = scheduleData?.data ?? [];
+
+  const statTiles = [
+    { label: 'Appointments', icon: '📅', value: stats?.total },
+    { label: 'Completed', icon: '✅', value: stats?.completed },
+    { label: 'Upcoming', icon: '⏰', value: stats?.upcoming },
+    { label: 'Missed', icon: '❌', value: stats?.missed },
+  ];
+
   return (
     <div className="app-shell">
       <Sidebar />
@@ -39,44 +100,44 @@ export function DashboardPage() {
 
         {/* ----------------------------- Doctor Profile ----------------------------- */}
         <section className="doctor-profile-card">
-          <img className="doctor-profile__avatar" src="https://i.pravatar.cc/100?img=23" alt="Dr. Sarah Williams" />
+          <img className="doctor-profile__avatar" src={AVATAR_URL} alt={name} />
           <div className="doctor-profile__content">
-            <h2 className="doctor-profile__name">Dr. Sarah Williams</h2>
-            <p className="doctor-profile__specialty">Cardiologist</p>
+            <h2 className="doctor-profile__name">{name}</h2>
+            <p className="doctor-profile__specialty">Doctor</p>
             <div className="doctor-profile__meta">
-              <span>📧 sarah.williams@hospital.com</span>
-              <span>📱 +1 234 567 8900</span>
-              <span>⭐ 12 years experience</span>
+              <span>📧 {email}</span>
             </div>
           </div>
           <div className="doctor-profile__status">
             <div className="status-dot"></div>
           </div>
-          <button className="doctor-profile__btn">View Profile</button>
+          <button className="doctor-profile__btn" onClick={() => navigate('/profile')}>View Profile</button>
         </section>
 
         {/* ----------------------------- Stats Cards ----------------------------- */}
         <section className="dashboard-grid">
-          <div className="stat-card">
-            <div className="stat-card__number">24</div>
-            <div className="stat-card__label">Appointments</div>
-            <div className="stat-card__icon">📅</div>
-          </div>
-          <div className="stat-card">
-            <div className="stat-card__number">12</div>
-            <div className="stat-card__label">Completed</div>
-            <div className="stat-card__icon">✅</div>
-          </div>
-          <div className="stat-card">
-            <div className="stat-card__number">8</div>
-            <div className="stat-card__label">Upcoming</div>
-            <div className="stat-card__icon">⏰</div>
-          </div>
-          <div className="stat-card">
-            <div className="stat-card__number">4</div>
-            <div className="stat-card__label">Missed</div>
-            <div className="stat-card__icon">❌</div>
-          </div>
+          {statsLoading ? (
+            Array.from({ length: 4 }).map((_, i) => (
+              <div className="stat-card" key={i}>
+                <div className="widget-skeleton__row" style={{ height: 90 }} />
+              </div>
+            ))
+          ) : statsErrored ? (
+            <div className="stat-card" style={{ gridColumn: '1 / -1' }}>
+              <div className="widget-error">
+                Could not load appointment stats.
+                <button className="widget-error__retry" onClick={() => refetchStats()}>Retry</button>
+              </div>
+            </div>
+          ) : (
+            statTiles.map((t) => (
+              <div className="stat-card" key={t.label}>
+                <div className="stat-card__number">{t.value}</div>
+                <div className="stat-card__label">{t.label}</div>
+                <div className="stat-card__icon">{t.icon}</div>
+              </div>
+            ))
+          )}
         </section>
 
         {/* ----------------------------- Main Content Grid ----------------------------- */}
@@ -84,41 +145,39 @@ export function DashboardPage() {
           {/* Today's Schedule */}
           <div className="card card--large">
             <h3 className="card__title">📅 Today's Schedule</h3>
-            <div className="schedule-list">
-              <div className="schedule-item">
-                <span className="schedule-time">09:00 AM</span>
-                <div className="schedule-patient">
-                  <img src="https://i.pravatar.cc/40?img=1" alt="" />
-                  <div>
-                    <div className="patient-name">John Doe</div>
-                    <div className="patient-service">Regular Checkup</div>
-                  </div>
-                </div>
-                <span className="status-badge status-badge--completed">Completed</span>
+            {scheduleLoading ? (
+              <div className="widget-skeleton">
+                {Array.from({ length: 3 }).map((_, i) => (
+                  <div className="widget-skeleton__row" key={i} />
+                ))}
               </div>
-              <div className="schedule-item">
-                <span className="schedule-time">10:30 AM</span>
-                <div className="schedule-patient">
-                  <img src="https://i.pravatar.cc/40?img=2" alt="" />
-                  <div>
-                    <div className="patient-name">Sarah Smith</div>
-                    <div className="patient-service">Follow-up Consultation</div>
-                  </div>
-                </div>
-                <span className="status-badge status-badge--completed">Completed</span>
+            ) : scheduleErrored ? (
+              <div className="widget-error">
+                Could not load today's schedule.
+                <button className="widget-error__retry" onClick={() => refetchSchedule()}>Retry</button>
               </div>
-              <div className="schedule-item">
-                <span className="schedule-time">11:00 AM</span>
-                <div className="schedule-patient">
-                  <img src="https://i.pravatar.cc/40?img=3" alt="" />
-                  <div>
-                    <div className="patient-name">Mike Johnson</div>
-                    <div className="patient-service">Blood Pressure Check</div>
-                  </div>
-                </div>
-                <span className="status-badge status-badge--inprogress">In Progress</span>
+            ) : appointments.length === 0 ? (
+              <div className="schedule-empty">No appointments today.</div>
+            ) : (
+              <div className="schedule-list">
+                {appointments.map((appt) => {
+                  const badge = deriveBadge(appt, now);
+                  return (
+                    <div className="schedule-item" key={appt.id}>
+                      <span className="schedule-time">{timeLabel(appt.appointment_date_time)}</span>
+                      <div className="schedule-patient">
+                        <img src={`https://i.pravatar.cc/40?img=${(appt.patient_id % 70) + 1}`} alt="" />
+                        <div>
+                          <div className="patient-name">{appt.patient?.full_name ?? 'Unknown patient'}</div>
+                          <div className="patient-service">{appt.reason_for_visit || 'Appointment'}</div>
+                        </div>
+                      </div>
+                      <span className={`status-badge status-badge--${badge.cls}`}>{badge.label}</span>
+                    </div>
+                  );
+                })}
               </div>
-            </div>
+            )}
           </div>
 
           {/* Appointment Status */}
@@ -136,118 +195,6 @@ export function DashboardPage() {
                 <div className="legend-item"><span className="dot upcoming"></span> Upcoming 30%</div>
                 <div className="legend-item"><span className="dot cancelled"></span> Cancelled 15%</div>
                 <div className="legend-item"><span className="dot noshow"></span> No-show 10%</div>
-              </div>
-            </div>
-          </div>
-        </section>
-
-        {/* ----------------------------- Bottom Grid ----------------------------- */}
-        <section className="dashboard-content">
-          {/* Recent Messages */}
-          <div className="card card--medium">
-            <h3 className="card__title">💬 Recent Messages</h3>
-            <div className="messages-list">
-              <div className="message-item">
-                <img src="https://i.pravatar.cc/40?img=10" alt="" />
-                <div className="message-content">
-                  <div className="message-name">Alice Johnson</div>
-                  <div className="message-text">Can I reschedule my appointment?</div>
-                </div>
-                <span className="message-time">just now</span>
-              </div>
-              <div className="message-item">
-                <img src="https://i.pravatar.cc/40?img=11" alt="" />
-                <div className="message-content">
-                  <div className="message-name">Michael Brown</div>
-                  <div className="message-text">My lab report is ready. Should I book a follow-up?</div>
-                </div>
-                <span className="message-time">just now</span>
-              </div>
-              <div className="message-item">
-                <img src="https://i.pravatar.cc/40?img=12" alt="" />
-                <div className="message-content">
-                  <div className="message-name">Emily Davis</div>
-                  <div className="message-text">Thank you for the prescription update.</div>
-                </div>
-                <span className="message-time">just now</span>
-              </div>
-            </div>
-            <button className="open-messages-btn">💬 Open Messages</button>
-          </div>
-
-          {/* Weekly Patient Volume */}
-          <div className="card card--medium">
-            <h3 className="card__title">📈 Weekly Patient Volume</h3>
-            <div className="chart-placeholder chart-line">
-              <div style={{ height: '120px', background: 'linear-gradient(135deg, rgba(100, 150, 255, 0.1) 0%, rgba(100, 150, 255, 0.05) 100%)', borderRadius: '8px' }}></div>
-            </div>
-          </div>
-        </section>
-
-        {/* ----------------------------- Tasks & Reviews Grid ----------------------------- */}
-        <section className="dashboard-content">
-          {/* Pending Tasks */}
-          <div className="card card--medium">
-            <h3 className="card__title">✓ Pending Tasks <span className="task-count">6</span></h3>
-            <div className="tasks-list">
-              <div className="task-item">
-                <input type="checkbox" />
-                <div>
-                  <div className="task-title">Review lab reports</div>
-                  <div className="task-desc">Check blood test results for 3 patients</div>
-                  <div className="task-date">🔴 Nov 20</div>
-                </div>
-              </div>
-              <div className="task-item">
-                <input type="checkbox" />
-                <div>
-                  <div className="task-title">Sign prescriptions</div>
-                  <div className="task-desc">5 prescriptions pending signature</div>
-                  <div className="task-date">🔴 Nov 20</div>
-                </div>
-              </div>
-            </div>
-          </div>
-
-          {/* Recent Patient Reviews */}
-          <div className="card card--medium">
-            <h3 className="card__title">⭐ Recent Patient Reviews</h3>
-            <div className="reviews-list">
-              <div className="review-item">
-                <div className="review-avatar">J.D.</div>
-                <div className="review-content">
-                  <div className="review-text">Excellent doctor! Very professional and caring.</div>
-                  <div className="review-stars">⭐⭐⭐⭐⭐</div>
-                </div>
-              </div>
-              <div className="review-item">
-                <div className="review-avatar">S.S.</div>
-                <div className="review-content">
-                  <div className="review-text">Great experience. Highly recommended!</div>
-                  <div className="review-stars">⭐⭐⭐⭐⭐</div>
-                </div>
-              </div>
-            </div>
-          </div>
-
-          {/* Medication Stock Alerts */}
-          <div className="card card--medium">
-            <h3 className="card__title">💊 Medication Stock Alerts</h3>
-            <div className="medication-list">
-              <div className="medication-item">
-                <div className="med-name">Insulin</div>
-                <div className="med-info">Stock: 5/10</div>
-                <span className="alert-badge alert-low">Low Stock</span>
-              </div>
-              <div className="medication-item">
-                <div className="med-name">Metformin 500mg</div>
-                <div className="med-info">Stock: 8/30</div>
-                <span className="alert-badge alert-critical">Critical</span>
-              </div>
-              <div className="medication-item">
-                <div className="med-name">Atorvastatin 20mg</div>
-                <div className="med-info">Stock: 20/50</div>
-                <span className="alert-badge alert-low">Low Stock</span>
               </div>
             </div>
           </div>

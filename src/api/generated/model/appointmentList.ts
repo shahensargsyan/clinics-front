@@ -24,14 +24,8 @@
  *
  * OpenAPI spec version: 0.1.0
  */
+import type { Appointment } from "./appointment";
 
-export interface MechanotherapyVisitCreate {
-  /** @maxLength 100 */
-  doctor_signature?: string;
-  /** @minimum 1 */
-  patient_id: number;
-  procedure_notes?: string;
-  recommendations?: string;
-  /** defaults to today */
-  visit_date?: string;
+export interface AppointmentList {
+  data: Appointment[];
 }
